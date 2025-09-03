@@ -1,9 +1,3 @@
-// Backend (Express)
-
-// GET /todos → returns all todos.
-// POST /todos → adds a new todo (just text).
-// DELETE /todos/:id → removes a todo.
-
 //Express
 const express = require("express")
 const app = express()
@@ -12,59 +6,55 @@ app.listen(3001)
 console.log("Server running on port 3001")
 app.use(express.static('dist'))
 
-//Cors
-const cors = require("cors")
-app.use(cors())
+//Mongoose + DB
+const mongoose = require("mongoose")
+const password = process.argv[2] 
+const url = `mongodb+srv://raudikon:${password}@cluster0.hhqiaep.mongodb.net/todoApp?retryWrites=true&w=majority&appName=Cluster0`
+mongoose.set('strictQuery', false)
+mongoose.connect(url).then(console.log("Established MongoDB connexion~"))
 
-//Logic 
-let allTodos = 
-[{
-      'item': "Finish my app", 
-      'done': false,
-      'id': 0
-      },
-    { 
-      'item': "Eat lunch", 
-      'done': false,
-      'id': 1
-    }
-]
+//Todo Schema 
+const todoSchema = new mongoose.Schema(
+    {
+        content: String, 
+        done: Boolean,
+    })
 
-//Homepage: displays all todos 
+const Todo = mongoose.model('Todo', todoSchema)
+
+todoSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
+})
+
+//Fetching all the todos 
 app.get('/todo', (request, response) => 
-    response.json(allTodos)
-)
-app.get('/', (request, response) => 
-    response.json(allTodos)
-)
-
-//Route for deleting a todo. 
-app.delete('/todo/:id', (request, response) => {
-
-    const id = request.params.id
-    allTodos = allTodos.filter(todo => todo.id.toString() !== id)
-    response.json(allTodos)
-}
+    Todo.find({}).then(todos => {
+        response.json(todos)
+    })
 )
 
-//Route for adding a todo 
+//Putting a todo 
 app.post('/todo', (request, response) => {
 
     const body = request.body 
 
-    newItem = {
-        "item" : body.item,
-        "done" : false,
-        "id" : allTodos.length 
-    }
+    const newTodo = new Todo({
+        content: body.content,
+        done: false
+    })
 
-    console.log("NEW ITEM")
-    console.log(newItem)
+    newTodo.save()
+    .then((result) => {
+        response.json(newTodo)
+    })
+})
 
-    allTodos.push(newItem)
-
-    console.log("TODO LIST WITH NEW ITEM")
-    console.log(allTodos)
-
-    response.json(allTodos)
+//Deleting a todo 
+app.delete('/todo/:id', (request, response) => {
+    Todo.findByIdAndDelete(request.params.id)
+    .then(response.status(204).end())
 })

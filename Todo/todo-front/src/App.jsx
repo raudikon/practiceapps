@@ -18,7 +18,6 @@ function App() {
     .then(response => setAllTodos(response.data))
   }, [])
 
-
   const handleDone = (id) => {
     axios.delete(`${baseUrl}/${id}`, id)
     .then((response) => {
@@ -28,18 +27,16 @@ function App() {
   }
 
   const handleNewTodo = () => {
-    console.log(entry, typeof entry)
     let newTodo = {
-      "item" : entry, 
+      "content" : entry, 
     }
-    console.log("NEW todo is ")
-    console.log(newTodo)
     axios.post(baseUrl, newTodo)
     .then((response) => {
-      setAllTodos(response.data)
+      setAllTodos(allTodos.concat(response.data))
       setNewEntry("") //clear user entry after successful submission 
     })
 }
+
 
   return (
     <div>
@@ -47,7 +44,7 @@ function App() {
       {
         allTodos.map(
           (todo) => (
-            <p>{todo.item} <button onClick={() => handleDone(todo.id)}>Done</button></p>
+            <p key={todo.id}>{todo.content} <button onClick={() => handleDone(todo.id)}>Done</button></p>
           )
         )
       }
