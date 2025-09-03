@@ -33,6 +33,9 @@ let allTodos =
 app.get('/todo', (request, response) => 
     response.json(allTodos)
 )
+app.get('/', (request, response) => 
+    response.json(allTodos)
+)
 
 //Route for deleting a todo. 
 app.delete('/todo/:id', (request, response) => {
