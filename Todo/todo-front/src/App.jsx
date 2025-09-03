@@ -9,14 +9,14 @@ import { useEffect, useState } from 'react'
 
 function App() {
 
-  const baseUrl = 'http://localhost:3001/todo'
+  const baseUrl = '/todo'
   const [allTodos, setAllTodos] = useState([])
   const [entry, setNewEntry] = useState("")
 
   useEffect(() => {
     axios.get(baseUrl)
     .then(response => setAllTodos(response.data))
-  })
+  }, [])
 
 
   const handleDone = (id) => {
@@ -36,7 +36,8 @@ function App() {
     console.log(newTodo)
     axios.post(baseUrl, newTodo)
     .then((response) => {
-      setAllTodos(allTodos.concat(response.data))
+      setAllTodos(response.data)
+      setNewEntry("") //clear user entry after successful submission 
     })
 }
 
