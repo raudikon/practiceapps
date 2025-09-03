@@ -8,10 +8,11 @@ app.use(express.static('dist'))
 
 //Mongoose + DB
 const mongoose = require("mongoose")
-const password = process.argv[2] 
-const url = `mongodb+srv://raudikon:${password}@cluster0.hhqiaep.mongodb.net/todoApp?retryWrites=true&w=majority&appName=Cluster0`
+const url = process.env.MONGODB_URI
 mongoose.set('strictQuery', false)
-mongoose.connect(url).then(console.log("Established MongoDB connexion~"))
+mongoose.connect(url)
+.then(console.log("Established MongoDB connexion~"))
+.catch(console.log("Error connecting to MongoDB"))
 
 //Todo Schema 
 const todoSchema = new mongoose.Schema(
