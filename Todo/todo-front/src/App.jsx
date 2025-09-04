@@ -14,11 +14,7 @@ function App() {
     .then(response => setAllTodos(response.data))
   }, [])
 
-<<<<<<< Updated upstream
-
-=======
   //handle removing a todo after it is done 
->>>>>>> Stashed changes
   const handleDone = (id) => {
     axios.delete(`${baseUrl}/${id}`, id)
     .then(() => {
@@ -31,13 +27,13 @@ function App() {
   const handleNewTodo = () => {
     console.log(entry, typeof entry)
     let newTodo = {
-      "item" : entry, 
+      "content" : entry, 
     }
     console.log("NEW todo is ")
     console.log(newTodo)
     axios.post(baseUrl, newTodo)
     .then((response) => {
-      setAllTodos(response.data)
+      setAllTodos([...allTodos, response.data])
       setNewEntry("") //clear user entry after successful submission 
     })
     .catch((e) => {
@@ -54,7 +50,7 @@ function App() {
       {
         allTodos.map(
           (todo) => (
-            <p>{todo.item} <button onClick={() => handleDone(todo.id)}>Done</button></p>
+            <p key={todo.id}>{todo.content} <button onClick={() => handleDone(todo.id)}>Done</button></p>
           )
         )
       }
