@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 //Express
 const express = require("express")
 const app = express()
@@ -12,7 +14,7 @@ const url = process.env.MONGODB_URI
 mongoose.set('strictQuery', false)
 mongoose.connect(url)
 .then(console.log("Established MongoDB connexion~"))
-.catch(console.log("Error connecting to MongoDB"))
+.catch(e => console.log(e, "Error connecting to MongoDB"))
 
 //Todo Schema 
 const todoSchema = new mongoose.Schema(
