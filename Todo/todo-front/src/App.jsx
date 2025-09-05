@@ -25,12 +25,9 @@ function App() {
 
   //handle adding a new todo 
   const handleNewTodo = () => {
-    console.log(entry, typeof entry)
     let newTodo = {
       "content" : entry, 
     }
-    console.log("NEW todo is ")
-    console.log(newTodo)
     axios.post(baseUrl, newTodo)
     .then((response) => {
       setAllTodos([...allTodos, response.data])
@@ -43,6 +40,7 @@ function App() {
       setTimeout(() => {setErrMsg(null)}, 5000)
     })
 }
+
 
   return (
     <div>

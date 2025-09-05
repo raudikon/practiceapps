@@ -1,8 +1,3 @@
-// Backend (Express)
-
-// GET /todos → returns all todos.
-// POST /todos → adds a new todo (just text).
-// DELETE /todos/:id → removes a todo.
 require('dotenv').config()
 
 //Express
@@ -33,6 +28,7 @@ const todoSchema = new mongoose.Schema(
     }, 
     done: Boolean,
   })
+
 
 const Todo = mongoose.model('Todo', todoSchema)
 
@@ -82,5 +78,6 @@ app.post('/todo', (request, response) => {
 //Deleting a todo 
 app.delete('/todo/:id', (request, response) => {
   Todo.findByIdAndDelete(request.params.id)
+
     .then(response.status(204).end())
 })
